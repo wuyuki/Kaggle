@@ -62,7 +62,6 @@ test_scores = []
 for max_feature in max_features:
     clf = RandomForestRegressor(n_estimators=100, max_features=max_feature)
     test_score = np.sqrt(-cross_val_score(clf, dummy_train_df.values, y_train, cv=10, scoring='neg_mean_squared_error'))
-    print(test_score)
     test_scores.append(np.mean(test_score))
 plt.plot(max_features, test_scores)
 plt.show()
@@ -105,11 +104,11 @@ y_ridge = np.expm1(ridge.predict(dummy_test_df.values))
 y_rf = np.expm1(rf.predict(dummy_test_df.values))
 y_stacking = (y_ridge + y_rf) / 2 #stacking
 #2. bagging
-bagging = BaggingRegressor(base_estimator=ridge, n_estimators=30)
+bagging = BaggingRegressor(estimator=ridge, n_estimators=10)
 bagging.fit(dummy_train_df.values, y_train)
 y_bagging = np.expm1(bagging.predict(dummy_test_df.values))
 #3. boosting
-boosting = AdaBoostRegressor(base_estimator=ridge, n_estimators=10)
+boosting = AdaBoostRegressor(estimator=ridge, n_estimators=10)
 boosting.fit(dummy_train_df.values, y_train)
 y_boosting = np.expm1(boosting.predict(dummy_test_df.values))
 #4. XGBoost
